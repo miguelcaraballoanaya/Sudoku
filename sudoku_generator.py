@@ -1,6 +1,5 @@
 import math, random
 
-
 class SudokuGenerator:
     '''
 	create a sudoku board - initialize class variables and set up the 2D board
@@ -45,7 +44,6 @@ class SudokuGenerator:
     def print_board(self):
         for i in self.board:
             print(i)
-        pass
 
     '''
 	Determines if num is contained in the specified row (horizontal) of the board
@@ -60,8 +58,8 @@ class SudokuGenerator:
 
     def valid_in_row(self, row, num):
         count = 0
-        for numb in self.board[row]:
-            if numb == num:
+        for value in self.board[row]:
+            if value == num:
                 count+=1
         if count>0:
             return False
@@ -80,8 +78,8 @@ class SudokuGenerator:
 
     def valid_in_col(self, col, num):
         count = 0
-        for numb in range(9):
-            if self.board[numb][col] == num:
+        for value in range(9):
+            if self.board[value][col] == num:
                 count += 1
         if count > 0:
             return False
@@ -103,15 +101,23 @@ class SudokuGenerator:
 
     def valid_in_box(self, row_start, col_start, num):
         count = 0
-        if row_start >6:
-            row_start= 6
-        if col_start>6:
-            col_start=6
-        for x in range(col_start,col_start+3):
-            for y in range(row_start,row_start+3):
-                if self.board[y][x]==num:
-                    count+=1
-        if count>0:
+        if 0 < row_start < 3:
+            row_start = 0
+        elif 3 < row_start < 6:
+            row_start = 3
+        elif row_start > 6:
+            row_start = 6
+        if 0 < col_start < 3:
+            col_start = 0
+        elif 3 < col_start < 6:
+            col_start = 3
+        elif col_start > 6:
+            col_start = 6
+        for x in range(col_start, col_start+3):
+            for y in range(row_start, row_start+3):
+                if self.board[y][x] == num:
+                    count += 1
+        if count > 0:
             return False
         return True
 
@@ -127,9 +133,9 @@ class SudokuGenerator:
     '''
 
     def is_valid(self, row, col, num):
-        if self.valid_in_row(row,num):
-            if self.valid_in_col(col,num):
-                if self.valid_in_box(row,col,num):
+        if self.valid_in_row(row, num):
+            if self.valid_in_col(col, num):
+                if self.valid_in_box(row, col, num):
                     return True
         return False
 
@@ -186,7 +192,6 @@ class SudokuGenerator:
             row += 1
             col = 0
         if row >= self.row_length and col >= self.row_length:
-            print("blue")
             return True
         if row < self.box_length:
             if col < self.box_length:
@@ -199,14 +204,12 @@ class SudokuGenerator:
                 row += 1
                 col = 0
                 if row >= self.row_length:
-                    print("green")
                     return True
 
         for num in range(1, self.row_length + 1):
             if self.is_valid(row, col, num):
                 self.board[row][col] = num
                 if self.fill_remaining(row, col + 1):
-                    print("red")
                     return True
                 self.board[row][col] = 0
         return False
@@ -241,7 +244,7 @@ class SudokuGenerator:
     def remove_cells(self):
         integer_list=[0,1,2,3,4,5,6,7,8]
         for i in range(self.removed_cells):
-            x =random.choice(integer_list)
+            x = random.choice(integer_list)
             y = random.choice(integer_list)
             while self.board[x][y]==0:
                 x=random.choice(integer_list)
@@ -269,10 +272,8 @@ def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)
     sudoku.fill_values()
     board = sudoku.get_board()
-    #i commented these cause the other one (fill_remaining) is what I can't get to work
-    #sudoku.remove_cells()
-    #board = sudoku.get_board()
-    sudoku.print_board()
+    sudoku.remove_cells()
+    board = sudoku.get_board()
     return board
 
 
