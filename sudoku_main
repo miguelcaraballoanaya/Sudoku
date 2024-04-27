@@ -187,7 +187,7 @@ while True:
                 board.draw()
                 welcome = False
        #for game screen
-              elif event.type == pygame.MOUSEBUTTONDOWN:
+      elif event.type == pygame.MOUSEBUTTONDOWN:
            if board.selected:
                board.deselect(board.selected_cube.get_row(),board.selected_cube.get_col())
            x,y= pygame.mouse.get_pos()
