@@ -24,9 +24,6 @@ class SudokuGenerator:
         self.board = [[0 for x in range(9)] for y in range(9)]
         self.box_length = 3
 
-
-
-
     '''
 	Returns a 2D python list of numbers which represents the board
 
@@ -211,7 +208,7 @@ class SudokuGenerator:
                 if self.fill_remaining(row, col + 1):
                     print("red")
                     return True
-                #self.board[row][col] = 0
+                self.board[row][col] = 0
         return False
 
     '''
