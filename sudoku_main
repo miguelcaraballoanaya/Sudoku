@@ -1,4 +1,16 @@
 import pygame, sys
+from classes import SudokuGenerator
+
+
+def generate_sudoku(size, removed):
+    sudoku = SudokuGenerator(size, removed)
+    sudoku.fill_values()
+    board = sudoku.get_board()
+    sudoku.remove_cells()
+    board = sudoku.get_board()
+    sudoku.print_board()
+    return board
+
 
 class Cell:
     def __init__(self,value, row, col,screen):
@@ -6,16 +18,29 @@ class Cell:
         self.row=row
         self.col=col
         self.screen=screen
+        self.sketched_value=""
+    def get_row(self):
+        return self.row
+    def get_col(self):
+        return self.col
+    def get_value(self):
+        return self.value
     def set_cell_value(self,value):
         self.value=value
     def set_sketched_value(self,value):
         self.sketched_value = value
+    def get_sketched(self):
+        return self.sketched_value
     def draw(self):
         if self.value != 0:
-            num_font=pygame.font.Font(None,200)
-            cell_surf= num_font.render(self.value,0,(31,52,158))
+            num_font=pygame.font.Font(None,100)
+            cell_surf= num_font.render(str(self.value),0,(31,52,158))
             cell_rect= cell_surf.get_rect(center=((self.row*80)-40,(self.col*80)-40))
-            screen.blit(cell_surf,cell_rect)
+            self.screen.blit(cell_surf,cell_rect)
+        elif self.value == 0:
+            pygame.draw.rect(self.screen, (255,252,243), (((self.row - 1) * 80)-2, ((self.col - 1) * 80)-2, 78, 78),1)
+
+
 
 
 
@@ -24,22 +49,45 @@ class Board:
         self.width=width
         self.height=height
         self.screen=screen
-        self.difficulty=difficulty
+        if difficulty == "easy":
+            self.removed= 30
+        elif difficulty == "medium":
+            self.removed = 40
+        elif difficulty == "hard":
+            self.removed = 50
 
+    initial_board = generate_sudoku(9, 30)
+    cell_list = [[0 for x in range(9)] for y in range(9)]
+    selected = False
+    selected_cube=0
     def draw(self):
         for i in range(1, 9):
             if i % 3 == 0:
-                pygame.draw.line(screen, (33, 24, 5), (0, i * 80), (720, i * 80), 3)
+                pygame.draw.line(self.screen, (33, 24, 5), (0, i * 80), (720, i * 80), 3)
             else:
-                pygame.draw.line(screen, (33, 24, 5), (0, i * 80), (720, i * 80))
+                pygame.draw.line(self.screen, (33, 24, 5), (0, i * 80), (720, i * 80))
         for i in range(1, 9):
             if i % 3 == 0:
-                pygame.draw.line(screen, (33, 24, 5), (i * 80, 0), (i * 80, 720), 3)
+                pygame.draw.line(self.screen, (33, 24, 5), (i * 80, 0), (i * 80, 720), 3)
             else:
-                pygame.draw.line(screen, (33, 24, 5), (i * 80, 0), (i * 80, 720))
+                pygame.draw.line(self.screen, (33, 24, 5), (i * 80, 0), (i * 80, 720))
+        for i in range(0,9):
+            for j in range(0,9):
+                self.cell_list[i][j]=Cell(self.initial_board[i][j],i+1,j+1,self.screen)
+        for i in range(0,9):
+            for j in range(0,9):
+                if self.cell_list[i][j].get_value()!=0:
+                    self.cell_list[i][j].draw()
+
 
     def select(self,row,col):
-        pygame.draw.rect(screen,(246,27,11),((row-1)*80,(col-1)*80,80,80),2)
+        pygame.draw.rect(self.screen,(246,27,11),(((row-1)*80)+2,((col-1)*80)+2,77,77),3)
+        self.selected_cube=self.cell_list[row-1][col-1]
+        self.selected = True
+
+    def deselect(self,row,col):
+        pygame.draw.rect(self.screen, (255,252,243), (((row - 1) * 80) + 2, ((col - 1) * 80) + 2, 77, 77), 3)
+        self.selected= False
 
     def click(self,x,y):
         if y<721:
@@ -52,16 +100,82 @@ class Board:
             return (row, col)
         return None
 
-#initializes the screen
+    def clear(self,row,col):
+        if self.initial_board[row-1][col-1]==0:
+            self.cell_list[row-1][col-1].set_cell_value(0)
+            self.cell_list[row-1][col-1].draw()
+
+    def sketch(self,value):
+        self.selected_cube.set_sketched_value(value)
+        num_font = pygame.font.Font(None, 40)
+        cell_surf = num_font.render(str(value), 0, (108, 105, 98))
+        cell_rect = cell_surf.get_rect(center=((self.selected_cube.get_row() * 80) - 60, (self.selected_cube.get_col() * 80) - 60))
+        self.screen.blit(cell_surf, cell_rect)
+
+
+
+
+
+#initializes the sudoku screen
 pygame.init()
-screen = pygame.display.set_mode((720,720))
+screen_game = pygame.display.set_mode((720,720))
 pygame.display.set_caption("Sudoku")
-screen.fill((255,252,243))
+screen_game.fill((255,252,243))
+board= Board(720,720,screen_game,"easy")
+board.draw()
+board.clear(2,0)
+
 
 while True:
    for event in pygame.event.get():
        if event.type == pygame.QUIT:
            pygame.quit()
            sys.exit()
+       elif event.type == pygame.MOUSEBUTTONDOWN:
+           if board.selected:
+               board.deselect(board.selected_cube.get_row(),board.selected_cube.get_col())
+           x,y= pygame.mouse.get_pos()
+           row,col=board.click(x,y)
+           board.select(row,col)
+       elif event.type== pygame.KEYDOWN:
+           if event.key==pygame.K_DELETE:
+               #doesnt work
+               board.clear(board.selected_cube.get_row(),board.selected_cube.get_col())
+
+           if (event.key==pygame.K_1):
+               board.sketch(1)
+           elif (event.key==pygame.K_2):
+               board.sketch(2)
+           elif (event.key==pygame.K_3):
+               board.sketch(3)
+           elif (event.key==pygame.K_4):
+               board.sketch(4)
+           elif (event.key==pygame.K_5):
+               board.sketch(5)
+           elif (event.key==pygame.K_6):
+               board.sketch(6)
+           elif (event.key==pygame.K_7):
+               board.sketch(7)
+           elif (event.key==pygame.K_8):
+               board.sketch(8)
+           elif(event.key==pygame.K_9):
+               board.sketch(9)
+
+           if event.key==pygame.K_RETURN:
+               #currently doesnt set the value in the correct cube
+               board.selected_cube.set_cell_value(board.selected_cube.get_sketched())
+               board.clear(board.selected_cube.get_row(),board.selected_cube.get_col())
+               board.selected_cube.draw()
+
+
+       '''keys that are left:
+       if arrow up
+       if arror down
+       if arrow left
+       if arrow right
+       if type -> sketch
+       if enter/return ->set'''
+
+
 
    pygame.display.update()
