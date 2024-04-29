@@ -17,10 +17,10 @@ class SudokuGenerator:
 	None
     '''
 
-    def __init__(self, row_length, removed_cells):
+    def __init__(self, row_length, removed_cells, board = [[0 for x in range(9)] for y in range(9)]):
         self.row_length = row_length
         self.removed_cells = removed_cells
-        self.board = [[0 for x in range(9)] for y in range(9)]
+        self.board = board
         self.box_length = 3
 
     '''
@@ -274,6 +274,8 @@ def generate_sudoku(size, removed):
     board = sudoku.get_board()
     sudoku.remove_cells()
     board = sudoku.get_board()
+    sudoku.print_board()
     return board
 
+generate_sudoku(9,20)
 

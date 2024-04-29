@@ -144,6 +144,36 @@ class Board:
             cell_rect = cell_surf.get_rect(center=((self.selected_cube.get_row() * 80) - 60, (self.selected_cube.get_col() * 80) - 60))
             self.screen.blit(cell_surf, cell_rect)
 
+    def is_full(self):
+        count = 0
+        for i in range(0,9):
+            for j in range(0,9):
+                if self.cell_list[i][j].get_value()==0:
+                    count +=1
+        if count == 0:
+            return True
+        else:
+            return False
+
+    def check_board(self):
+        count = 0
+        cell_list_values=[[0 for x in range(9)] for y in range(9)]
+        for i in range(0,9):
+            for j in range(0,9):
+                cell_list_values[i][j] == self.cell_list[i][j].get_value()
+        end_board = SudokuGenerator(9,self.removed,cell_list_values)
+        for i in range(0, 9):
+            for j in range(0, 9):
+                if end_board.is_valid(i,j,end_board.board[i][j]):
+                    pass
+                else:
+                    count+=1
+        if count>0:
+            return False
+        else:
+            return True
+
+
 
 # initializes the screen
 pygame.init()
@@ -341,5 +371,11 @@ while True:
                     cell_surf = num_font.render(str(board.selected_cube.get_sketched()), 0, (31, 52, 158))
                     cell_rect = cell_surf.get_rect(center=((board.selected_cube.get_row() * 80) - 40, (board.selected_cube.get_col() * 80) - 40))
                     screen_game.blit(cell_surf, cell_rect)
+
+                    if board.is_full():
+                        if board.check_board():
+                            win_game()
+                        else:
+                            lose_game()
 
     pygame.display.update()
