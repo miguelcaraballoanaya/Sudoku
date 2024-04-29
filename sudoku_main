@@ -127,8 +127,14 @@ class Board:
             self.cell_list[row-1][col-1].draw()
 
     def sketch(self,value):
-        self.selected_cube.set_sketched_value(value)
         num_font = pygame.font.Font(None, 40)
+        if self.selected_cube.get_sketched() != '':
+            sketched = int(self.selected_cube.get_sketched())
+            if sketched > 0:
+                sketch_surf = num_font.render(str(sketched), 0, (255, 252, 243))
+                sketch_rect = sketch_surf.get_rect(center=((self.selected_cube.get_row() * 80) - 60, (self.selected_cube.get_col() * 80) - 60))
+                self.screen.blit(sketch_surf, sketch_rect)
+        self.selected_cube.set_sketched_value(value)
         cell_surf = num_font.render(str(value), 0, (108, 105, 98))
         cell_rect = cell_surf.get_rect(center=((self.selected_cube.get_row() * 80) - 60, (self.selected_cube.get_col() * 80) - 60))
         self.screen.blit(cell_surf, cell_rect)
@@ -283,7 +289,7 @@ while True:
                if board.initial_board[board.selected_cube.get_row()-1][board.selected_cube.get_col()-1]==0:
                    num_font = pygame.font.Font(None, 100)
                    cell_surf = num_font.render(str(board.selected_cube.get_sketched()), 0, (31, 52, 158))
-                   cell_rect = cell_surf.get_rect(center=((board.selected_cube.get_col()* 80) - 40, (board.selected_cube.get_row() * 80) - 40))
+                   cell_rect = cell_surf.get_rect(center=((board.selected_cube.get_row()* 80) - 40, (board.selected_cube.get_col() * 80) - 40))
                    screen_game.blit(cell_surf, cell_rect)
 
 
