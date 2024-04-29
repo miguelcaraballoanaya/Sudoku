@@ -219,10 +219,12 @@ while True:
             elif 490 <= x <= 620 and 726 <= y <= 776:  # exit
                 pygame.quit()
                 sys.exit()
-           if board.selected:
+           elif board.selected:
                board.deselect(board.selected_cube.get_row(),board.selected_cube.get_col())
-           row,col=board.click(x,y)
-           board.select(row,col)
+           click_result = board.click(x, y)
+            if click_result is not None:
+                row, col = click_result
+                board.select(row, col)
        elif event.type== pygame.KEYDOWN:
            if event.key==pygame.K_DELETE:
                #doesnt work
