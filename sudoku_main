@@ -62,7 +62,7 @@ class Board:
     selected_cube=0
 
     def draw(self):
-        for i in range(1, 9):
+        for i in range(1, 10):
             if i % 3 == 0:
                 pygame.draw.line(self.screen, (33, 24, 5), (0, i * 80), (720, i * 80), 3)
             else:
@@ -79,6 +79,26 @@ class Board:
             for j in range(0,9):
                 if self.cell_list[i][j].get_value()!=0:
                     self.cell_list[i][j].draw()
+
+        board_fonts = pygame.font.Font(None, 30)
+        pygame.draw.rect(screen_game, (0, 0, 153), pygame.Rect(100, 726, 130, 50), 4)
+        pygame.draw.rect(screen_game, (153, 204, 255), pygame.Rect(110, 734, 110, 35))
+        pygame.draw.rect(screen_game, (0, 0, 153), pygame.Rect(295, 726, 130, 50), 4)
+        pygame.draw.rect(screen_game, (153, 204, 255), pygame.Rect(305, 734, 110, 35))
+        pygame.draw.rect(screen_game, (0, 0, 153), pygame.Rect(490, 726, 130, 50), 4)
+        pygame.draw.rect(screen_game, (153, 204, 255), pygame.Rect(500, 734, 110, 35))
+
+        reset_surf = board_fonts.render('RESET', 0, (0, 0, 0))
+        reset_rect = reset_surf.get_rect(center=(165, 752.5))
+        screen_game.blit(reset_surf, reset_rect)
+
+        restart_surf = board_fonts.render('RESTART', 0, (0, 0, 0))
+        restart_rect = restart_surf.get_rect(center=(360, 752.5))
+        screen_game.blit(restart_surf, restart_rect)
+
+        exit_surf = board_fonts.render('EXIT', 0, (0, 0, 0))
+        exit_rect = exit_surf.get_rect(center=(555, 752.5))
+        screen_game.blit(exit_surf, exit_rect)
 
 
     def select(self,row,col):
@@ -119,7 +139,7 @@ class Board:
 
 #initializes the sudoku screen
 pygame.init()
-screen_game = pygame.display.set_mode((720,720))
+screen_game = pygame.display.set_mode((720,780))
 pygame.display.set_caption("Sudoku")
 screen_game.fill((255,252,243))
 
@@ -188,9 +208,19 @@ while True:
                 welcome = False
        #for game screen
       elif event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = pygame.mouse.get_pos()
+            if 100 <= x <= 230 and 726 <= y <= 776:  # reset board (still working on)
+                pass
+            elif 295 <= x <= 425 and 726 <= y <= 776:  # restart
+                screen_game.fill((255, 252, 243))
+                welcome_screen()
+                welcome = True
+                continue
+            elif 490 <= x <= 620 and 726 <= y <= 776:  # exit
+                pygame.quit()
+                sys.exit()
            if board.selected:
                board.deselect(board.selected_cube.get_row(),board.selected_cube.get_col())
-           x,y= pygame.mouse.get_pos()
            row,col=board.click(x,y)
            board.select(row,col)
        elif event.type== pygame.KEYDOWN:
