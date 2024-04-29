@@ -156,22 +156,7 @@ class Board:
             return False
 
     def check_board(self):
-        count = 0
-        cell_list_values=[[0 for x in range(9)] for y in range(9)]
-        for i in range(0,9):
-            for j in range(0,9):
-                cell_list_values[i][j] == self.cell_list[i][j].get_value()
-        end_board = SudokuGenerator(9,self.removed,cell_list_values)
-        for i in range(0, 9):
-            for j in range(0, 9):
-                if end_board.is_valid(i,j,end_board.board[i][j]):
-                    pass
-                else:
-                    count+=1
-        if count>0:
-            return False
-        else:
-            return True
+
 
 
 
