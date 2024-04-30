@@ -346,26 +346,26 @@ while True:
                 board.clear(board.selected_cube.get_row(), board.selected_cube.get_col())
             if event.key == pygame.K_LEFT:
                 row, col = board.selected_cube.get_row() - 1, (board.selected_cube.get_col())
-                if board.selected_cube.get_col() == 1:
-                    col = 9
-                board.deselect(board.selected_cube.get_row(), board.selected_cube.get_col())
-                board.select(row, col)
-            elif event.key == pygame.K_RIGHT:
-                row, col = board.selected_cube.get_row() + 1, (board.selected_cube.get_col())
-                if board.selected_cube.get_col() == 9:
-                    col = 1
-                board.deselect(board.selected_cube.get_row(), board.selected_cube.get_col())
-                board.select(row, col)
-            elif event.key == pygame.K_UP:
-                row, col = (board.selected_cube.get_row(), board.selected_cube.get_col() - 1)
                 if board.selected_cube.get_row() == 1:
                     row = 9
                 board.deselect(board.selected_cube.get_row(), board.selected_cube.get_col())
                 board.select(row, col)
-            elif event.key == pygame.K_DOWN:
-                row, col = (board.selected_cube.get_row(), board.selected_cube.get_col() + 1)
+            elif event.key == pygame.K_RIGHT:
+                row, col = board.selected_cube.get_row() + 1, (board.selected_cube.get_col())
                 if board.selected_cube.get_row() == 9:
                     row = 1
+                board.deselect(board.selected_cube.get_row(), board.selected_cube.get_col())
+                board.select(row, col)
+            elif event.key == pygame.K_UP:
+                row, col = (board.selected_cube.get_row(), board.selected_cube.get_col() - 1)
+                if board.selected_cube.get_col() == 1:
+                    col = 9
+                board.deselect(board.selected_cube.get_row(), board.selected_cube.get_col())
+                board.select(row, col)
+            elif event.key == pygame.K_DOWN:
+                row, col = (board.selected_cube.get_row(), board.selected_cube.get_col() + 1)
+                if board.selected_cube.get_col() == 9:
+                    col = 1
                 board.deselect(board.selected_cube.get_row(), board.selected_cube.get_col())
                 board.select(row, col)
             if event.key == pygame.K_1:
