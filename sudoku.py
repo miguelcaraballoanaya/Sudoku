@@ -126,11 +126,13 @@ class Board:
         return None
 
     def clear(self, row, col):
-        if self.initial_board[row-1][col-1] == 0:
+        if self.initial_board[row-1][col-1]==0:
             self.cell_list[row-1][col-1].set_cell_value(0)
-            self.cell_list[row-1][col-1].draw()
+            pygame.draw.rect(self.screen, (255,252,243),
+                             (((row - 1) * 80) +5, ((col - 1) * 80) +5, 71, 71))
 
     def sketch(self, value):  # dont sketch in set cells
+        self.clear(self.selected_cube.get_row(),self.selected_cube.get_col())
         if board.initial_board[board.selected_cube.get_row() - 1][board.selected_cube.get_col() - 1] == 0:
             num_font = pygame.font.Font(None, 40)
             if self.selected_cube.get_sketched() != '':
@@ -340,8 +342,7 @@ while True:
                 row, col = click_result
                 board.select(row, col)
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DELETE:
-                # doesnt work
+            if (event.key == pygame.K_DELETE) or (event.key == pygame.K_BACKSPACE):
                 board.clear(board.selected_cube.get_row(), board.selected_cube.get_col())
             if event.key == pygame.K_LEFT:
                 row, col = board.selected_cube.get_row() - 1, (board.selected_cube.get_col())
