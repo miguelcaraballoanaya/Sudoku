@@ -156,6 +156,53 @@ class Board:
             return False
 
     def check_board(self):
+        cell_list_values=[[0 for x in range (9)]for y in range (9)]
+        for i in range (0,9):
+            for j in range (0,9):
+                cell_list_values[i][j]= self.cell_list[i][j].get_value()
+
+        for i in range(0,9):
+            for j in range(0,9):
+                # checks row
+                count=0
+                for value in cell_list_values[i]:
+                    if value == cell_list_values[i][j]:
+                        count +=1
+                        if count>1:
+                            return False
+
+                #checks col
+                count = 0
+                for value in range(9):
+                    if cell_list_values[value][j] == cell_list_values[i][j]:
+                        count +=1
+                        if count>1:
+                            return False
+
+                #checks box
+                count = 0
+                if 0 <= i < 3:
+                    row_start = 0
+                elif 3 <= i < 6:
+                    row_start = 3
+                elif i >= 6:
+                    row_start = 6
+                if 0 <= j < 3:
+                    col_start = 0
+                elif 3 <= j < 6:
+                    col_start = 3
+                elif j >= 6:
+                    col_start = 6
+                for x in range(col_start, col_start + 3):
+                    for y in range(row_start, row_start + 3):
+                        if cell_list_values[y][x] == cell_list_values[i][j]:
+                            count += 1
+                            if count>1:
+                                return False
+
+
+        return True
+
 
 
 
@@ -213,7 +260,8 @@ def win_game():
     medium_surf = exit_font.render('EXIT', 0, (0, 0, 0))
     medium_rect = medium_surf.get_rect(center=(360, 474))
     screen_game.blit(medium_surf, medium_rect)
-    win = True
+    #win = True
+    #end_game = True
 
 
 def lose_game():
@@ -229,12 +277,14 @@ def lose_game():
     medium_surf = exit_font.render('RESTART', 0, (0, 0, 0))
     medium_rect = medium_surf.get_rect(center=(360, 474))
     screen_game.blit(medium_surf, medium_rect)
-    win = False
+    #win = False
+
 
 
 welcome_screen()
 welcome = True  # can use this to distinguish what screen the user is on
 end_game = False
+win = True
 
 while True:
     for event in pygame.event.get():
@@ -270,7 +320,7 @@ while True:
                     welcome_screen()
                     welcome = True
                     continue
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN and (end_game is False) :
             x, y = pygame.mouse.get_pos()
             if 100 <= x <= 230 and 726 <= y <= 776:  # reset board ADD RESET
                 screen_game.fill((255, 252, 243))
@@ -360,7 +410,11 @@ while True:
                     if board.is_full():
                         if board.check_board():
                             win_game()
+                            end_game= True
+                            win = True
                         else:
                             lose_game()
+                            end_game = True
+                            win = False
 
     pygame.display.update()
