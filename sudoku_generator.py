@@ -276,6 +276,3 @@ def generate_sudoku(size, removed):
     board = sudoku.get_board()
     sudoku.print_board()
     return board
-
-generate_sudoku(9,20)
-
